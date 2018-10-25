@@ -31,5 +31,7 @@ public class CoordinateTest {
 		assertEquals(c3, c2);
 		assertNotEquals(c1, c2);
 		assertNotEquals(c2, c1);
+		assertNotEquals(c1, null);
+		assertNotEquals(null, c1);
 	}
 }
