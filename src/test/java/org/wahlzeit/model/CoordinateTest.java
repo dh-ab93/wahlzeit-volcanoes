@@ -11,39 +11,18 @@ import static org.junit.Assert.assertTrue;
 public class CoordinateTest {
 	@Test
 	public void testConstructor() {
+		@SuppressWarnings("unused")
 		Coordinate c1 = new Coordinate(0.0, 0.0, 0.0);
 		
-		boolean exceptionAsExpected;
-		
-		exceptionAsExpected = false;
-		try {
-			new Coordinate(Double.POSITIVE_INFINITY, 0.0, 0.0);
-		} catch(IllegalArgumentException e) {
-			exceptionAsExpected = true;
-		} catch(Exception e) {
-			;
-		}
-		assertTrue(exceptionAsExpected);
-		
-		exceptionAsExpected = false;
-		try {
-			new Coordinate(0.0, Double.NEGATIVE_INFINITY, 0.0);
-		} catch(IllegalArgumentException e) {
-			exceptionAsExpected = true;
-		} catch(Exception e) {
-			;
-		}
-		assertTrue(exceptionAsExpected);
-		
-		exceptionAsExpected = false;
-		try {
-			new Coordinate(0.0, 0.0, Double.NaN);
-		} catch(IllegalArgumentException e) {
-			exceptionAsExpected = true;
-		} catch(Exception e) {
-			;
-		}
-		assertTrue(exceptionAsExpected);
+		assertTrue(throwsIllegalArgumentException(
+				() -> {new Coordinate(Double.POSITIVE_INFINITY, 0.0, 0.0);}
+				));
+		assertTrue(throwsIllegalArgumentException(
+				() -> {new Coordinate(0.0, Double.NEGATIVE_INFINITY, 0.0);}
+				));
+		assertTrue(throwsIllegalArgumentException(
+				() -> {new Coordinate(0.0, 0.0, Double.NaN);}
+				));
 	}
 	
 	@Test
@@ -58,15 +37,9 @@ public class CoordinateTest {
 		assertEquals(13.0, c3.getDistance(c4), delta);
 		assertEquals(13.0, c4.getDistance(c3), delta);
 		// test null argument
-		boolean exceptionAsExpected = false;
-		try {
-			c1.getDistance(null);
-		} catch(IllegalArgumentException e) {
-			exceptionAsExpected = true;
-		} catch(Exception e) {
-			;
-		}
-		assertTrue(exceptionAsExpected);
+		assertTrue(throwsIllegalArgumentException(
+				() -> {c1.getDistance(null);}
+				));
 	}
 	
 	@Test
@@ -80,5 +53,18 @@ public class CoordinateTest {
 		assertNotEquals(c2, c1);
 		assertNotEquals(c1, null);
 		assertNotEquals(null, c1);
+	}
+	
+	private boolean throwsIllegalArgumentException(Runnable r) {
+		boolean catchedIllegalArgumentException = false;
+		try {
+			r.run();
+			r.wait();
+		} catch(IllegalArgumentException e) {
+			catchedIllegalArgumentException = true;
+		} catch(Exception e) {
+			;
+		}
+		return catchedIllegalArgumentException;
 	}
 }
