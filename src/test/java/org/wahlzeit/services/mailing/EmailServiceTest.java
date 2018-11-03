@@ -31,11 +31,13 @@ public class EmailServiceTest {
 
 	EmailService emailService = null;
 	EmailAddress validAddress = null;
+	EmailAddress validAddress2 = null;
 
 	@Before
 	public void setup() throws Exception {
 		emailService = EmailServiceManager.getDefaultService();
 		validAddress = EmailAddress.getFromString("test@test.de");
+		validAddress2 = EmailAddress.getFromString("test2@test.de");
 	}
 
 	@Test
@@ -53,6 +55,21 @@ public class EmailServiceTest {
 	public void testSendValidEmail() {
 		try {
 			assertTrue(emailService.sendEmailIgnoreException(validAddress, validAddress, "hi", "test"));
+		} catch (Exception ex) {
+			Assert.fail("Silent mode does not allow exceptions");
+		}
+	}
+	
+	@Test
+	public void testSendValidBccEmail() {
+		
+		try {
+			assertTrue(emailService.sendEmailIgnoreException(
+					validAddress,
+					validAddress,
+					validAddress2,
+					"test subject",
+					"test body"));
 		} catch (Exception ex) {
 			Assert.fail("Silent mode does not allow exceptions");
 		}

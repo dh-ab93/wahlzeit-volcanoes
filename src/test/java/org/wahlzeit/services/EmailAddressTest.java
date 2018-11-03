@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 /**
  * Test cases for the EmailAddress class.
  */
+
 public class EmailAddressTest extends TestCase {
 
 	/**
@@ -64,6 +65,21 @@ public class EmailAddressTest extends TestCase {
 	 */
 	public void testEmptyEmailAddress() {
 		assertFalse(EmailAddress.EMPTY.isValid());
+	}
+	
+	public void testSameStringSameEmailAddress() {
+		String s = "foo@bar.com";
+		EmailAddress ea1 = EmailAddress.getFromString(s);
+		EmailAddress ea2 = EmailAddress.getFromString(s);
+		assertTrue(ea1.isValid());
+		assertTrue(ea2.isValid());
+		assertEquals(ea1, ea2);
+		assertEquals(ea2, ea1);
+		/*
+		 * test for same object, not just for equality
+		 * -> proof that static Map<String, EmailAddress> works as intended
+		 */
+		assertTrue(ea1 == ea2);
 	}
 
 }
