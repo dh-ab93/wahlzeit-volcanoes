@@ -29,6 +29,8 @@ import org.wahlzeit.model.PhotoFactory;
 import org.wahlzeit.model.PhotoManager;
 import org.wahlzeit.model.User;
 import org.wahlzeit.model.UserManager;
+import org.wahlzeit.model.VolcanoPhotoFactory;
+import org.wahlzeit.model.VolcanoPhotoManager;
 import org.wahlzeit.model.persistence.DatastoreAdapter;
 import org.wahlzeit.model.persistence.ImageStorage;
 import org.wahlzeit.services.LogBuilder;
@@ -67,8 +69,17 @@ public abstract class ModelMain extends AbstractMain {
 		log.config(LogBuilder.createSystemMessage().addAction("init PhotoFactory").toString());
 		PhotoFactory.initialize();
 
+		log.config(LogBuilder.createSystemMessage().addAction("init VolcanoPhotoFactory").toString());
+		VolcanoPhotoFactory.initialize();
+
 		log.config(LogBuilder.createSystemMessage().addAction("load Photos").toString());
 		PhotoManager.getInstance().init();
+
+		/* no use, gets the instance of the parent class
+		 * (can't override getInstance because it's final)
+		log.config(LogBuilder.createSystemMessage().addAction("load Photos (VolcanoPhotoManager)").toString());
+		VolcanoPhotoManager.getInstance().init();
+		*/
 	}
 
 
@@ -86,7 +97,7 @@ public abstract class ModelMain extends AbstractMain {
 	 */
 	public void saveAll() throws IOException{
 		PhotoCaseManager.getInstance().savePhotoCases();
-		PhotoManager.getInstance().savePhotos();
+		VolcanoPhotoManager.getInstance().savePhotos();
 		UserManager.getInstance().saveClients();
 		GlobalsManager.getInstance().saveGlobals();
 	}
@@ -98,7 +109,7 @@ public abstract class ModelMain extends AbstractMain {
 		UserManager userManager = UserManager.getInstance();
 		User user = new User(userId, nickName, emailAddress);
 
-		PhotoManager photoManager = PhotoManager.getInstance();
+		PhotoManager photoManager = VolcanoPhotoManager.getInstance();
 		File photoDirFile = new File(photoDir);
 		FileFilter photoFileFilter = file -> file.getName().endsWith(".jpg");
 		File[] photoFiles = photoDirFile.listFiles(photoFileFilter);
