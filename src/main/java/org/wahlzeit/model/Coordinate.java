@@ -1,56 +1,40 @@
 package org.wahlzeit.model;
 
-public class Coordinate {
+public interface Coordinate {
 	/**
-	 * make Coordinate immutable
-	 * +: need to check values of x, y, z only once (constructor)
+	 * Converts the Coordinate to CartesianCoordinate.
+	 * @methodtype conversion
 	 */
-	public final double x, y, z;
-	
-	public Coordinate(double x, double y, double z) {
-		if(isIllegalValue(x) || isIllegalValue(y) || isIllegalValue(z)) {
-			throw new IllegalArgumentException();
-		}
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-	
-	public double getDistance(Coordinate other) {
-		if(other == null) {
-			throw new IllegalArgumentException("null is an illegal argument");
-		}
-		double distX = this.x - other.x;
-		double distY = this.y - other.y;
-		double distZ = this.z - other.z;
-		return Math.sqrt(distX * distX + distY * distY + distZ * distZ);
-	}
-	
-	public boolean isEqual(Object other) {
-		if(other == null) {
-			return false;
-		}
-		if(other == this) {
-			return true;
-		}
-		if(!(other instanceof Coordinate)) {
-			return false;
-		}
-		Coordinate o = (Coordinate) other;
-		return this.x == o.x && this.y == o.y && this.z == o.z;
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-		return isEqual(other);
-	}
+	public abstract CartesianCoordinate asCartesianCoordinate();
 	
 	/**
-	 * Checks for illegal double values
-	 * @param v: double value to check
-	 * @return True if v is NaN or (pos./neg.) infinity, False otherwise
+	 * Returns the cartesian distance between this and another Coordinate.
+	 * @methodtype getter
 	 */
-	private boolean isIllegalValue(double v) {
-		return ! Double.isFinite(v);
-	}
+	public abstract double getCartesianDistance(Coordinate other);
+	
+	/**
+	 * Converts the Coordinate to SphericCoordinate.
+	 * @methodtype conversion
+	 */
+	public abstract SphericCoordinate asSphericCoordinate();
+	
+	/**
+	 * Returns the central angle between this and another Coordinate.
+	 * @methodtype getter
+	 */
+	public abstract double getCentralAngle(Coordinate other);
+	
+	/**
+	 * Tests if this and another Coordinate point to almost the same point in space.
+	 * Coordinates are compared in the coordinate system of this Coordinate.
+	 * Coordinates are considered almost equal if all of their numerical components
+	 * are almost equal. Numerical values are considered almost equal if their
+	 * values differ by less than 1E-10 and (for non-zero values of equal sign only) their
+	 * relative difference is less than 1E-10.
+	 * @return true if both Coordinates are almost equal, else false
+	 * @see https://en.wikipedia.org/wiki/Great-circle_distance#Formulas
+	 * @methodtype boolean-query
+	 */
+	public abstract boolean isEqual(Coordinate other);
 }

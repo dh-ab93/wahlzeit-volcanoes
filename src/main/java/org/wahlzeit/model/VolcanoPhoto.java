@@ -1,7 +1,7 @@
 package org.wahlzeit.model;
 
-import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Date;
 
 import com.googlecode.objectify.annotation.Subclass;
 

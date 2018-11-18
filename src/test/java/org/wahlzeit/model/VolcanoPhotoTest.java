@@ -36,7 +36,7 @@ public class VolcanoPhotoTest {
 	
 	@Test
 	public void testVolcanoPhoto() {
-		Coordinate c1 = new Coordinate(0.0, 0.0, 0.0);
+		Coordinate c1 = new CartesianCoordinate(0.0, 0.0, 0.0);
 		Location l1 = new Location(c1);
 		
 		Volcano v1 = new Volcano();
