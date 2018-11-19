@@ -42,8 +42,13 @@ public class CartesianCoordinate implements Coordinate {
 	public SphericCoordinate asSphericCoordinate() {
 		// from https://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
 		double radius = Math.sqrt(x*x + y*y + z*z); // range [0, +infty)
-		double theta = Math.acos(z / radius); // range [0,PI]
-		double phi = Math.atan2(y, x); // range [-PI,PI] will be normalized by constructor
+		double theta = 0.0;
+		double phi = 0.0;
+		if(radius > 0) {
+			theta = Math.acos(z / radius); // range [0,PI]
+			// TODO x==0?
+			phi = Math.atan2(y, x); // range [-PI,PI] will be normalized by constructor
+		}
 		return new SphericCoordinate(radius, theta, phi);
 	}
 

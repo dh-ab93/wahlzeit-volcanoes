@@ -53,7 +53,13 @@ public class SphericCoordinate implements Coordinate {
 		if(other == null) {
 			throw new IllegalArgumentException();
 		}
+		if(radius == 0.0) {
+			throw new IllegalStateException();
+		}
 		SphericCoordinate o = other.asSphericCoordinate();
+		if(o.radius == 0.0) {
+			throw new IllegalArgumentException();
+		}
 		/*
 		 * from https://en.wikipedia.org/wiki/Great-circle_distance#Formulas
 		 * (lambda in source is azimuthal angle -> phi in our model,
