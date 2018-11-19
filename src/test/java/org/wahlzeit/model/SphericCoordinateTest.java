@@ -46,8 +46,8 @@ public class SphericCoordinateTest {
 		Coordinate sc7 = new SphericCoordinate(
 				1.0 + 1.0 * CoordinateHelper.defaultRelTolerance / 10.0,
 				0.0 + CoordinateHelper.defaultAbsTolerance / 10.0,
-				0.0 + CoordinateHelper.defaultAbsTolerance / 10.0
-		);
+				0.0 + CoordinateHelper.defaultAbsTolerance / 10.0);
+		Coordinate sc8 = new SphericCoordinate(1.0, 0.0, Math.PI);
 		assertEquals(sc1, sc2);
 		assertEquals(sc2, sc1);
 		assertEquals(sc1, sc3);
@@ -62,5 +62,7 @@ public class SphericCoordinateTest {
 		assertNotEquals(sc6, sc4);
 		assertNotEquals(sc1, null);
 		assertNotEquals(null, sc1);
+		assertEquals(sc4, sc8);
+		assertEquals(sc8, sc4);
 	}
 }

@@ -75,19 +75,8 @@ public class SphericCoordinate implements Coordinate {
 
 	@Override
 	public boolean isEqual(Coordinate other) {
-		if(other == null) {
-			return false;
-		}
-		if(other == this) {
-			return true;
-		}
-		SphericCoordinate o = other.asSphericCoordinate();
-		if(CoordinateHelper.isAlmostEqual(0.0, radius) || CoordinateHelper.isAlmostEqual(0.0, o.radius)) {
-			return CoordinateHelper.isAlmostEqual(radius, o.radius);
-		}
-		return CoordinateHelper.isAlmostEqual(radius, o.radius) &&
-				CoordinateHelper.isAlmostEqual(theta, o.theta) &&
-				CoordinateHelper.isAlmostEqual(phi, o.phi);
+		// complicated edge cases for radius near 0.0 or theta near 0.0 or PI -> keep it simple
+		return asCartesianCoordinate().isEqual(other);
 	}
 	
 	@Override

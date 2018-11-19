@@ -46,7 +46,6 @@ public class CartesianCoordinate implements Coordinate {
 		double phi = 0.0;
 		if(radius > 0) {
 			theta = Math.acos(z / radius); // range [0,PI]
-			// TODO x==0?
 			phi = Math.atan2(y, x); // range [-PI,PI] will be normalized by constructor
 		}
 		return new SphericCoordinate(radius, theta, phi);

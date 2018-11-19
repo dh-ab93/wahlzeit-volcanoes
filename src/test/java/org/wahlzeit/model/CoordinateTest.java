@@ -65,6 +65,10 @@ public class CoordinateTest {
 		Coordinate c2 = new CartesianCoordinate(-0.90019762973552, 0.12832006020246, -0.41614683654714);
 		assertTrue(sc.asCartesianCoordinate().isEqual(c2.asCartesianCoordinate()));
 		assertTrue(sc.asSphericCoordinate().isEqual(c2.asSphericCoordinate()));
+		// test atan2 behavior for 0.0
+		CartesianCoordinate c3 = new CartesianCoordinate(0.0, 0.0, 3.0);
+		SphericCoordinate c4 = new SphericCoordinate(3.0, 0.0, 0.0);
+		assertTrue(c3.asSphericCoordinate().isEqual(c4));
 	}
 	
 	/**
