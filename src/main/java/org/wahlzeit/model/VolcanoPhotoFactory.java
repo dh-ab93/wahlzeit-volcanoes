@@ -15,7 +15,7 @@ public class VolcanoPhotoFactory extends PhotoFactory {
 	/**
 	 * Hidden singleton instance; needs to be initialized from the outside.
 	 */
-	private static VolcanoPhotoFactory instance = null;
+	private static final VolcanoPhotoFactory instance = new VolcanoPhotoFactory();
 
 	protected VolcanoPhotoFactory() {
 		// do nothing
@@ -32,25 +32,9 @@ public class VolcanoPhotoFactory extends PhotoFactory {
 	 * Public singleton access method.
 	 */
 	public static synchronized VolcanoPhotoFactory getInstance() {
-		if (instance == null) {
-			log.config(LogBuilder.createSystemMessage().addAction("setting VolcanoPhotoFactory").toString());
-			setInstance(new VolcanoPhotoFactory());
-		}
-
 		return instance;
 	}
 
-	/**
-	 * Method to set the singleton instance of VolcanoPhotoFactory.
-	 */
-	protected static synchronized void setInstance(VolcanoPhotoFactory volcanoPhotoFactory) {
-		if (instance != null) {
-			throw new IllegalStateException("attempt to initalize VolcanoPhotoFactory twice");
-		}
-
-		instance = volcanoPhotoFactory;
-	}
-	
 	/**
 	 * @methodtype factory
 	 */

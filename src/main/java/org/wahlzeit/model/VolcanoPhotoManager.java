@@ -4,12 +4,16 @@ import java.util.logging.Logger;
 
 public class VolcanoPhotoManager extends PhotoManager {
 	
-	protected static final VolcanoPhotoManager instance = new VolcanoPhotoManager();
+	private static final VolcanoPhotoManager instance = new VolcanoPhotoManager();
 
 	private static final Logger log = Logger.getLogger(VolcanoPhotoManager.class.getName());
 
 	public VolcanoPhotoManager() {
 		super();
+	}
+	
+	public static synchronized VolcanoPhotoManager getInstance() {
+		return instance;
 	}
 	
 	/*
