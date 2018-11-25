@@ -1,6 +1,6 @@
 package org.wahlzeit.model;
 
-public class SphericCoordinate implements Coordinate {
+public class SphericCoordinate extends AbstractCoordinate {
 	/*
 	 * make SphericCoordinate immutable
 	 * +: need to check values of radius, theta, phi only once (constructor)
@@ -13,14 +13,14 @@ public class SphericCoordinate implements Coordinate {
 	 * phi as azimuthal angle [0, 2PI)
 	 */
 	public SphericCoordinate(double radius, double theta, double phi) {
-		if(CoordinateHelper.isIllegalValue(radius) ||
-				CoordinateHelper.isIllegalValue(theta) ||
-				CoordinateHelper.isIllegalValue(phi)) {
+		if(AbstractCoordinate.isIllegalValue(radius) ||
+				AbstractCoordinate.isIllegalValue(theta) ||
+				AbstractCoordinate.isIllegalValue(phi)) {
 			throw new IllegalArgumentException();
 		}
 		this.radius = Math.abs(radius);
-		this.theta = CoordinateHelper.normalizeAngle(theta, 0.0, Math.PI);
-		this.phi = CoordinateHelper.normalizeAngle(phi, 0.0, 2.0*Math.PI);
+		this.theta = AbstractCoordinate.normalizeAngle(theta, 0.0, Math.PI);
+		this.phi = AbstractCoordinate.normalizeAngle(phi, 0.0, 2.0*Math.PI);
 	}
 	
 	@Override
@@ -74,17 +74,8 @@ public class SphericCoordinate implements Coordinate {
 	}
 
 	@Override
-	public boolean isEqual(Coordinate other) {
+	boolean doIsEqual(Coordinate other) {
 		// complicated edge cases for radius near 0.0 or theta near 0.0 or PI -> keep it simple
-		return asCartesianCoordinate().isEqual(other);
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-		if(other instanceof Coordinate) {
-			return isEqual((Coordinate) other);
-		} else {
-			return false;
-		}
+		return asCartesianCoordinate().doIsEqual(other);
 	}
 }

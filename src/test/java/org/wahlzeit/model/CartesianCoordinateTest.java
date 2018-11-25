@@ -30,9 +30,9 @@ public class CartesianCoordinateTest {
 		Coordinate cc2 = new CartesianCoordinate(3.0, 4.0, 5.0);
 		Coordinate cc3 = new CartesianCoordinate(3.0, 4.0, 5.0);
 		Coordinate cc4 = new CartesianCoordinate(
-				3.0 + CoordinateHelper.defaultAbsTolerance / 10.0,
-				4.0 + CoordinateHelper.defaultAbsTolerance / 10.0,
-				5.0 + 5.0 * CoordinateHelper.defaultRelTolerance / 10.0
+				3.0 + AbstractCoordinate.equalityAbsTolerance / 10.0,
+				4.0 + AbstractCoordinate.equalityAbsTolerance / 10.0,
+				5.0 + 5.0 * AbstractCoordinate.equalityRelTolerance / 10.0
 		);
 		assertEquals(cc2, cc3);
 		assertEquals(cc3, cc2);

@@ -44,9 +44,9 @@ public class SphericCoordinateTest {
 		Coordinate sc5 = new SphericCoordinate(1.0, Math.PI / 2.0, 0.0);
 		Coordinate sc6 = new SphericCoordinate(1.0, Math.PI / 2.0, Math.PI);
 		Coordinate sc7 = new SphericCoordinate(
-				1.0 + 1.0 * CoordinateHelper.defaultRelTolerance / 10.0,
-				0.0 + CoordinateHelper.defaultAbsTolerance / 10.0,
-				0.0 + CoordinateHelper.defaultAbsTolerance / 10.0);
+				1.0 + 1.0 * AbstractCoordinate.equalityRelTolerance / 10.0,
+				0.0 + AbstractCoordinate.equalityAbsTolerance / 10.0,
+				0.0 + AbstractCoordinate.equalityAbsTolerance / 10.0);
 		Coordinate sc8 = new SphericCoordinate(1.0, 0.0, Math.PI);
 		assertEquals(sc1, sc2);
 		assertEquals(sc2, sc1);

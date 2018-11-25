@@ -1,6 +1,6 @@
 package org.wahlzeit.model;
 
-public class CartesianCoordinate implements Coordinate {
+public class CartesianCoordinate extends AbstractCoordinate {
 	/*
 	 * make CartesianCoordinate immutable
 	 * +: need to check values of x, y, z only once (constructor)
@@ -11,9 +11,9 @@ public class CartesianCoordinate implements Coordinate {
 	 * right-handed coordinate system where y points right, z points up
 	 */
 	public CartesianCoordinate(double x, double y, double z) {
-		if(CoordinateHelper.isIllegalValue(x) ||
-				CoordinateHelper.isIllegalValue(y) ||
-				CoordinateHelper.isIllegalValue(z)) {
+		if(AbstractCoordinate.isIllegalValue(x) ||
+				AbstractCoordinate.isIllegalValue(y) ||
+				AbstractCoordinate.isIllegalValue(z)) {
 			throw new IllegalArgumentException();
 		}
 		this.x = x;
@@ -57,25 +57,10 @@ public class CartesianCoordinate implements Coordinate {
 	}
 	
 	@Override
-	public boolean isEqual(Coordinate other) {
-		if(other == null) {
-			return false;
-		}
-		if(other == this) {
-			return true;
-		}
+	boolean doIsEqual(Coordinate other) {
 		CartesianCoordinate o = other.asCartesianCoordinate();
-		return CoordinateHelper.isAlmostEqual(x, o.x) &&
-				CoordinateHelper.isAlmostEqual(y, o.y) &&
-				CoordinateHelper.isAlmostEqual(z, o.z);
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-		if(other instanceof Coordinate) {
-			return isEqual((Coordinate) other);
-		} else {
-			return false;
-		}
+		return AbstractCoordinate.isAlmostEqual(x, o.x) &&
+				AbstractCoordinate.isAlmostEqual(y, o.y) &&
+				AbstractCoordinate.isAlmostEqual(z, o.z);
 	}
 }

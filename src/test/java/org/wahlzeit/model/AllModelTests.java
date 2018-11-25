@@ -6,7 +6,7 @@ import org.junit.runner.*;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	org.wahlzeit.model.AccessRightsTest.class,
-	org.wahlzeit.model.CoordinateHelperTest.class,
+	org.wahlzeit.model.AbstractCoordinateTest.class,
 	org.wahlzeit.model.CartesianCoordinateTest.class,
 	org.wahlzeit.model.SphericCoordinateTest.class,
 	org.wahlzeit.model.CoordinateTest.class,
