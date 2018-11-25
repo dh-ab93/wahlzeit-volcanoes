@@ -53,6 +53,6 @@ public class AbstractCoordinateTest {
         assertTrue(AbstractCoordinate.isAlmostEqual(-deltaBelowAbs, 0.0));
         assertTrue(! AbstractCoordinate.isAlmostEqual(0.0, -deltaAboveAbs));
         assertTrue(! AbstractCoordinate.isAlmostEqual(-deltaAboveAbs, 0.0));
-        assertTrue(! AbstractCoordinate.isAlmostEqual(-deltaBelowAbs / 2.0, deltaBelowAbs / 2.0));
+        assertTrue(AbstractCoordinate.isAlmostEqual(-deltaBelowAbs / 2.0, deltaBelowAbs / 2.0));
     }
 }
