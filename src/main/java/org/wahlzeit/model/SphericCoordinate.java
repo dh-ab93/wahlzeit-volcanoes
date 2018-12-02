@@ -1,5 +1,10 @@
 package org.wahlzeit.model;
 
+/**
+ * class invariants: radius, theta and phi are finite double values (not NaN,
+ * not infinity); are ensured by immutable class and initial checks in
+ * constructor.
+ */
 public class SphericCoordinate extends AbstractCoordinate {
 	/*
 	 * make SphericCoordinate immutable
@@ -7,20 +12,27 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 */
 	public final double radius, theta, phi;
 
+	void assertClassInvariants() {
+		assertTrue(Double.isFinite(radius) && radius >= 0.0, RuntimeException.class);
+		assertTrue(Double.isFinite(theta) && theta >= 0.0 && theta < Math.PI, RuntimeException.class);
+		assertTrue(Double.isFinite(phi) && phi >= 0.0 && phi < 2.0*Math.PI, RuntimeException.class);
+	}
+
 	/**
 	 * spherical coordinate system with
      * theta as polar angle [0,PI),
-	 * phi as azimuthal angle [0, 2PI)
+	 * phi as azimuthal angle [0, 2PI).
+	 * Theta and phi will be normalized to be inside that range.
+	 * @throws IllegalArgumentException if any argument is not a finite double value
 	 */
 	public SphericCoordinate(double radius, double theta, double phi) {
-		if(AbstractCoordinate.isIllegalValue(radius) ||
-				AbstractCoordinate.isIllegalValue(theta) ||
-				AbstractCoordinate.isIllegalValue(phi)) {
-			throw new IllegalArgumentException();
-		}
+		assertArgIsFinite(radius);
+		assertArgIsFinite(theta);
+		assertArgIsFinite(phi);
 		this.radius = Math.abs(radius);
-		this.theta = AbstractCoordinate.normalizeAngle(theta, 0.0, Math.PI);
-		this.phi = AbstractCoordinate.normalizeAngle(phi, 0.0, 2.0*Math.PI);
+		this.theta = normalizeAngle(theta, 0.0, Math.PI);
+		this.phi = normalizeAngle(phi, 0.0, 2.0*Math.PI);
+		assertClassInvariants();
 	}
 	
 	@Override
@@ -50,16 +62,10 @@ public class SphericCoordinate extends AbstractCoordinate {
 
 	@Override
 	public double getCentralAngle(Coordinate other) {
-		if(other == null) {
-			throw new IllegalArgumentException();
-		}
-		if(radius == 0.0) {
-			throw new IllegalStateException();
-		}
+		assertTrue(other != null, IllegalArgumentException.class);
+		assertTrue(radius != 0.0, IllegalStateException.class);
 		SphericCoordinate o = other.asSphericCoordinate();
-		if(o.radius == 0.0) {
-			throw new IllegalArgumentException();
-		}
+		assertTrue(o.radius != 0.0, IllegalArgumentException.class);
 		/*
 		 * from https://en.wikipedia.org/wiki/Great-circle_distance#Formulas
 		 * (lambda in source is azimuthal angle -> phi in our model,
@@ -68,9 +74,10 @@ public class SphericCoordinate extends AbstractCoordinate {
 		double phi1 = theta;
 		double phi2 = o.theta;
 		double deltaLambda = Math.abs(phi - o.phi);
-		return Math.acos(
-				Math.sin(phi1) * Math.sin(phi2) +
-				Math.cos(phi1) * Math.cos(phi2) * Math.cos(deltaLambda));
+		double acosArg = Math.sin(phi1) * Math.sin(phi2) +
+				Math.cos(phi1) * Math.cos(phi2) * Math.cos(deltaLambda);
+		double centralAngle = Math.acos(acosArg);
+		return centralAngle;
 	}
 
 	@Override

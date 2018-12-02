@@ -2,20 +2,36 @@ package org.wahlzeit.model;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * tests static helper methods of AbstractCoordinate
  */
 public class AbstractCoordinateTest {
     @Test
-    public void testIsIllegalValue() {
-        assertTrue(AbstractCoordinate.isIllegalValue(Double.NaN));
-        assertTrue(AbstractCoordinate.isIllegalValue(Double.NEGATIVE_INFINITY));
-        assertTrue(AbstractCoordinate.isIllegalValue(Double.POSITIVE_INFINITY));
-        assertTrue(! AbstractCoordinate.isIllegalValue(Double.MIN_VALUE));
-        assertTrue(! AbstractCoordinate.isIllegalValue(0.0));
+    public void testAssertArgIsFinal() {
+        assertTrue(CoordinateTest.throwsIllegalArgumentException(
+                () -> AbstractCoordinate.assertArgIsFinite(Double.NaN)));
+        assertTrue(CoordinateTest.throwsIllegalArgumentException(
+                () -> AbstractCoordinate.assertArgIsFinite(Double.NEGATIVE_INFINITY)));
+        assertTrue(CoordinateTest.throwsIllegalArgumentException(
+                () -> AbstractCoordinate.assertArgIsFinite(Double.POSITIVE_INFINITY)));
+        assertFalse(CoordinateTest.throwsIllegalArgumentException(
+                () -> AbstractCoordinate.assertArgIsFinite(Double.MIN_VALUE)));
+        assertFalse(CoordinateTest.throwsIllegalArgumentException(
+                () -> AbstractCoordinate.assertArgIsFinite(0.0)));
+    }
+
+    @Test
+    public void testAssertTrue() {
+        assertTrue(CoordinateTest.throwsIllegalArgumentException(
+                () -> AbstractCoordinate.assertTrue(false, IllegalArgumentException.class)));
+        assertFalse(CoordinateTest.throwsIllegalArgumentException(
+                () -> AbstractCoordinate.assertTrue(true, IllegalArgumentException.class)));
+        assertTrue(CoordinateTest.throwsIllegalStateException(
+                () -> AbstractCoordinate.assertTrue(false, IllegalStateException.class)));
+        assertFalse(CoordinateTest.throwsIllegalStateException(
+                () -> AbstractCoordinate.assertTrue(true, IllegalStateException.class)));
     }
 
     @Test
