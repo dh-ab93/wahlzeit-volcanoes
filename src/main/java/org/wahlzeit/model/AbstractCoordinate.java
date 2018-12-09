@@ -1,5 +1,8 @@
 package org.wahlzeit.model;
 
+import java.io.StringWriter;
+import java.util.logging.Logger;
+
 public abstract class AbstractCoordinate implements Coordinate {
     /**
      * @MethodType boolean-query
@@ -7,7 +10,25 @@ public abstract class AbstractCoordinate implements Coordinate {
     @Override
     public boolean equals(Object other) {
         if(other instanceof Coordinate) {
-            return isEqual((Coordinate) other);
+            boolean result = false; // default answer in case an exception occurs
+            try {
+                result = isEqual((Coordinate) other);
+            } catch (CoordinateError e) {
+                // contract violation, but do not escalate (method signature doesn't allow it)
+                // but at least log the conversion error in full detail
+	            Logger log = Logger.getLogger(AbstractCoordinate.class.getName());
+	            java.io.StringWriter sw = new StringWriter();
+	            e.printStackTrace(new java.io.PrintWriter(sw));
+	            String stacktrace = sw.toString();
+	            log.warning(String.format(
+	            		"AbstractCoordinate.equals() call failed (" +
+					            "this coordinate: %s; " +
+					            "other coordinate: %s), " +
+					            "stack trace:",
+			            this.toString(), other.toString()
+	            ) + System.lineSeparator() + stacktrace);
+            }
+            return result;
         } else {
             return false;
         }
@@ -19,7 +40,7 @@ public abstract class AbstractCoordinate implements Coordinate {
      * (contains the common code of coordinateImplementations.isEqual())
      */
     @Override
-    public boolean isEqual(Coordinate other) {
+    public boolean isEqual(Coordinate other) throws CoordinateError {
         if(other == null) {
             return false;
         }
@@ -33,7 +54,7 @@ public abstract class AbstractCoordinate implements Coordinate {
      * @MethodType boolean-query
      * @MethodProperties hook
      */
-    abstract boolean doIsEqual(Coordinate other);
+    abstract boolean doIsEqual(Coordinate other) throws CoordinateError;
 
     /**
      * Tests if two double values are equal within a certain tolerance.
@@ -44,7 +65,7 @@ public abstract class AbstractCoordinate implements Coordinate {
      * @MethodProperties default-value
      */
     // helper methods must be package visible in order to be accessible for test suites
-    static boolean isAlmostEqual(double expected, double actual) {
+    static boolean isAlmostEqual(double expected, double actual) throws CoordinateUseException {
         return isAlmostEqual(expected, actual, Coordinate.equalityAbsTolerance, Coordinate.equalityRelTolerance);
     }
 
@@ -56,11 +77,11 @@ public abstract class AbstractCoordinate implements Coordinate {
      *         else false
      * @MethodType helper
      */
-    static boolean isAlmostEqual(double expected, double actual, double absTolerance, double relTolerance) {
-        assertArgIsFinite(expected);
-        assertArgIsFinite(actual);
-        assertArgIsFinite(absTolerance);
-        assertArgIsFinite(relTolerance);
+    static boolean isAlmostEqual(double expected, double actual, double absTolerance, double relTolerance) throws CoordinateUseException {
+        assertArgIsFinite(expected, "expected");
+        assertArgIsFinite(actual, "actual");
+        assertArgIsFinite(absTolerance, "absTolerance");
+        assertArgIsFinite(relTolerance, "relTolerance");
         return isWithinAbsoluteTolerance(expected, actual, absTolerance) ||
                 (expected != 0.0 && actual != 0.0 && isWithinRelativeTolerance(expected, actual, relTolerance));
     }
@@ -92,13 +113,13 @@ public abstract class AbstractCoordinate implements Coordinate {
      * @return the normalized angle
      * @MethodType helper
      */
-    static double normalizeAngle(double angle, double angleMin, double angleMax) {
+    static double normalizeAngle(double angle, double angleMin, double angleMax) throws CoordinateUseException {
         // those 4 asserts could be dropped - the only user is the SphericCoordinate constructor,
         // which already does these checks
-        assertTrue(angleMin < angleMax, IllegalArgumentException.class);
-        assertArgIsFinite(angle);
-        assertArgIsFinite(angleMin);
-        assertArgIsFinite(angleMax);
+        assertArg(angleMin < angleMax, "angleMin must be less than angleMax");
+        assertArgIsFinite(angle, "angle");
+        assertArgIsFinite(angleMin, "angleMin");
+        assertArgIsFinite(angleMax, "angleMax");
         double intervalLength = Math.abs(angleMax - angleMin);
         if(angle < angleMin) {
             double factor = Math.floor(Math.abs((angleMax - angle) / intervalLength));
@@ -116,31 +137,64 @@ public abstract class AbstractCoordinate implements Coordinate {
      * @throws IllegalArgumentException if v is NaN or (pos./neg.) infinity
      * @MethodType assertion
      */
-    static void assertArgIsFinite(double v) {
+    static void assertArgIsFinite(double v, String argName) throws CoordinateUseException {
         if(! Double.isFinite(v)) {
-            throw new IllegalArgumentException();
+            throw new CoordinateUseException(
+                    argName + " must have a finite double value",
+                    new IllegalArgumentException()
+            );
         }
     }
 
-    /**
-     * Generic assertion helper method for boolean expressions that throws a specified exception.
-     * @param condition the boolean expression to check
-     * @param exceptionClass the exception type to throw if condition is false
-     * @throws E if condition evaluates to false
-     * @throws RuntimeException if E cannot be instantiated
-     * @MethodType assertion
-     */
-    // not possible to instantiate E with a message
-    static <E extends Exception> void assertTrue(boolean condition, Class<E> exceptionClass) throws E {
-        if(! condition) {
-            E exception;
-            try {
-                exception = exceptionClass.newInstance();
-            } catch(Exception error) {
-                throw new RuntimeException("exception while trying to instantiate an exception of type " +
-                        exceptionClass.getName(), error);
-            }
-            throw exception;
+    static void assertArgMaxMagnitude(double arg, String argName, double limit) throws CoordinateUseException {
+        if(Math.abs(arg) > Math.abs(limit)) {
+            throw new CoordinateUseException(
+                    String.format(
+                            "%s must have an absolute value that is less than or equal to the" +
+                                    "allowable maximum value %g (input: %g)",
+                            argName, limit, arg
+                    ),
+                    new IllegalArgumentException()
+            );
         }
     }
+
+    static void assertArgNotNull(Object arg, String argName) throws CoordinateUseException {
+        if(arg == null) {
+            throw new CoordinateUseException(
+                    argName + " must not be null",
+                    new NullPointerException()
+            );
+        }
+    }
+
+    static void assertArg(boolean expression, String reason) throws CoordinateUseException {
+        if(! expression) {
+            throw new CoordinateUseException(
+                    reason,
+                    new IllegalArgumentException()
+            );
+        }
+    }
+
+    static void assertState(boolean expression, String reason) throws CoordinateUseException {
+        if(! expression) {
+            throw new CoordinateUseException(
+                    reason,
+                    new IllegalStateException()
+            );
+        }
+    }
+
+    static void assertInternalCondition(boolean expression, String reason) throws CoordinateError {
+        if(! expression) {
+            throw new CoordinateError(reason);
+        }
+    }
+
+    /*
+    static CoordinateException takeBlame(CoordinateException cause) {
+        return new CoordinateException(cause).blameCallee();
+    }
+    */
 }

@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.GregorianCalendar;
+import java.util.logging.Logger;
 
 public class VolcanoPhotoTest {
 	
@@ -36,7 +37,13 @@ public class VolcanoPhotoTest {
 	
 	@Test
 	public void testVolcanoPhoto() {
-		Coordinate c1 = new CartesianCoordinate(0.0, 0.0, 0.0);
+		Coordinate c1;
+		try {
+			c1 = new CartesianCoordinate(0.0, 0.0, 0.0);
+		} catch (AbstractCoordinateException e) {
+			// fail test
+			throw new AssertionError(e);
+		}
 		Location l1 = new Location(c1);
 		
 		Volcano v1 = new Volcano();

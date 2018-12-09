@@ -6,33 +6,33 @@ public interface Coordinate {
 
 	/**
 	 * Converts the Coordinate to CartesianCoordinate.
+	 * @throws CoordinateError for contract violation in callee (bug in code)
 	 * @MethodType conversion
 	 */
-	CartesianCoordinate asCartesianCoordinate();
+	CartesianCoordinate asCartesianCoordinate() throws CoordinateError;
 	
 	/**
 	 * Returns the cartesian distance between this and another Coordinate.
-	 * @throws ArithmeticException if computations yielded values outside the range that double can express
+	 * @throws CoordinateUseException for contract violation in caller (illegal arguments / improper use of method in client code)
+	 * @throws CoordinateError for contract violation in callee (bug in code behind the interface)
 	 * @MethodType getter
 	 */
-	double getCartesianDistance(Coordinate other);
+	double getCartesianDistance(Coordinate other) throws CoordinateUseException, CoordinateError;
 	
 	/**
 	 * Converts the Coordinate to SphericCoordinate.
-	 * @throws IllegalArgumentException for a null argument
-	 * @throws ArithmeticException if computations yielded values outside the range that double can express
+	 * @throws CoordinateError for contract violation in callee (bug in code behind the interface)
 	 * @MethodType conversion
 	 */
-	SphericCoordinate asSphericCoordinate();
+	SphericCoordinate asSphericCoordinate() throws CoordinateError;
 	
 	/**
 	 * Returns the central angle between this and another Coordinate.
-	 * @throws IllegalArgumentException for a null argument
-	 * @throws IllegalArgumentException for an argument with radius 0
-	 * @throws IllegalStateException if this coordinate has radius 0
+	 * @throws CoordinateUseException for contract violation in caller (illegal arguments / improper use of method in client code)
+	 * @throws CoordinateError for contract violation in callee (bug in code behind the interface)
 	 * @MethodType getter
 	 */
-	double getCentralAngle(Coordinate other);
+	double getCentralAngle(Coordinate other) throws CoordinateUseException, CoordinateError;
 	
 	/**
 	 * Tests if this and another Coordinate point to almost the same point in space.
@@ -43,7 +43,8 @@ public interface Coordinate {
 	 * 1E-10.
 	 * @return true if both Coordinates are almost equal, else false
 	 * @see "https://en.wikipedia.org/wiki/Great-circle_distance#Formulas"
+	 * @throws CoordinateError for contract violation in callee (bug in code behind the interface)
 	 * @MethodType boolean-query
 	 */
-	boolean isEqual(Coordinate other);
+	boolean isEqual(Coordinate other) throws CoordinateError;
 }
