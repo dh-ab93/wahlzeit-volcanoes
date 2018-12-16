@@ -1,11 +1,14 @@
 package org.wahlzeit.model;
 
+import java.util.HashMap;
+
 /**
  * class invariants: x, y and z are finite double values (not NaN,
  * not infinity); are ensured by immutable class and initial checks in
  * constructor.
  */
 public class CartesianCoordinate extends AbstractCoordinate {
+	protected static HashMap<String, CartesianCoordinate> cache = new HashMap<>();
 	public static final double MAX_VALUE = Math.pow(2, 510);
 	public static final CartesianCoordinate ORIGIN = new CartesianCoordinate();
 
@@ -35,24 +38,39 @@ public class CartesianCoordinate extends AbstractCoordinate {
 		y = 0.0;
 		z = 0.0;
 	}
+
+	protected CartesianCoordinate(double x, double y, double z) throws CoordinateError {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		assertClassInvariants();
+	}
 	
 	/**
 	 * right-handed coordinate system where y points right, z points up
-	 * @throws IllegalArgumentException if any argument is not a finite double value
+	 * @throws CoordinateUseException if any argument is not a finite double value or has magnitude > MAX_VALUE
+	 * @throws CoordinateError for contract violation in callee (bug in code)
+	 * @MethodType factory
 	 */
-	public CartesianCoordinate(double x, double y, double z) throws CoordinateUseException, CoordinateError {
+	public static CartesianCoordinate create(double x, double y, double z) throws CoordinateUseException, CoordinateError {
 		assertArgIsFinite(x, "x");
 		assertArgIsFinite(y, "y");
 		assertArgIsFinite(z, "z");
 		assertArgMaxMagnitude(x, "x", MAX_VALUE);
 		assertArgMaxMagnitude(y, "y", MAX_VALUE);
 		assertArgMaxMagnitude(z, "z", MAX_VALUE);
-
-		this.x = x;
-		this.y = y;
-		this.z = z;
-
-		assertClassInvariants();
+		String key = asString(x, y, z);
+		CartesianCoordinate c = cache.get(key);
+		if(c == null) {
+			synchronized (CartesianCoordinate.class) {
+				c = cache.get(key);
+				if(c == null) {
+					c = new CartesianCoordinate(x, y, z);
+					cache.put(key, c);
+				}
+			}
+		}
+		return c;
 	}
 	
 	@Override
@@ -62,7 +80,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
 
 	@Override
 	public double getCartesianDistance(Coordinate other) throws CoordinateUseException, CoordinateError {
-		assertArg(other != null, "other may not be null");
+		assertPrecondition(other != null, "other may not be null");
 
 		CartesianCoordinate o = other.asCartesianCoordinate(); // let CoordinateError pass on
 		double distX = this.x - o.x;
@@ -106,7 +124,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
 		}
 		SphericCoordinate result = null;
 		try {
-			result = new SphericCoordinate(radius, theta, phi);
+			result = SphericCoordinate.create(radius, theta, phi);
 		} catch (CoordinateUseException e) {
 			// we violated the contract, take the blame by wrapping in a CoordinateError
 			throw new CoordinateError(e);
@@ -128,12 +146,12 @@ public class CartesianCoordinate extends AbstractCoordinate {
 		// doing it the hard way because we are a public method (i.e. at the interface boundary)
 		assertArgNotNull(other, "other");
 		SphericCoordinate thisAsSphericCoordinate = asSphericCoordinate();
-		assertState(
+		assertPrecondition(
 				thisAsSphericCoordinate.radius != 0.0,
 				"getCentralAngle() is undefined on coordinates evaluating to radius 0"
 		);
 		SphericCoordinate o = other.asSphericCoordinate();
-		assertArg(
+		assertPrecondition(
 				o.radius != 0.0,
 				"getCentralAngle() is undefined for coordinates evaluating to radius 0"
 		);
@@ -177,8 +195,19 @@ public class CartesianCoordinate extends AbstractCoordinate {
 		return result;
 	}
 
+	/**
+	 * @MethodType conversion
+	 */
 	@Override
 	public String toString() {
-		return String.format("CartesianCoordinate(%g, %g, %g)", x, y, z);
+		return asString(x, y, z);
+	}
+
+	/**
+	 * @MethodType conversion
+	 */
+	static protected String asString(double x, double y, double z) {
+		// precision = 10 (10 significant digits) according to Coordinate.equalityRelTolerance = 1e-10
+		return String.format("CartesianCoordinate(%.10g, %.10g, %.10g)", x, y, z);
 	}
 }

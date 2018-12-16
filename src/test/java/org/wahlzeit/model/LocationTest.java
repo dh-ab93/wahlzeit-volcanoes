@@ -7,8 +7,8 @@ public class LocationTest {
 	public void testConstructor() {
 		Coordinate c1, c2;
 		try {
-			c1 = new CartesianCoordinate(1.0, 2.0, 3.0);
-			c2 = new SphericCoordinate(1.0, 2.0, 3.0);
+			c1 = CartesianCoordinate.create(1.0, 2.0, 3.0);
+			c2 = SphericCoordinate.create(1.0, 2.0, 3.0);
 		} catch (AbstractCoordinateException e) {
 			throw new AssertionError(e);
 		}

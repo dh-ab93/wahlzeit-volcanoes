@@ -71,7 +71,7 @@ public abstract class AbstractCoordinate implements Coordinate {
 
     /**
      * Tests if two double values are equal within a certain absolute and relative tolerance.
-     * @throws IllegalArgumentException if any argument is not a finite double value
+     * @throws CoordinateUseException if any argument is not a finite double value
      * @return true if both values are equal within the given absolute tolerance
      *         or (for non-zero values only) equal within the given relative tolerance,
      *         else false
@@ -116,7 +116,7 @@ public abstract class AbstractCoordinate implements Coordinate {
     static double normalizeAngle(double angle, double angleMin, double angleMax) throws CoordinateUseException {
         // those 4 asserts could be dropped - the only user is the SphericCoordinate constructor,
         // which already does these checks
-        assertArg(angleMin < angleMax, "angleMin must be less than angleMax");
+        assertPrecondition(angleMin < angleMax, "angleMin must be less than angleMax");
         assertArgIsFinite(angle, "angle");
         assertArgIsFinite(angleMin, "angleMin");
         assertArgIsFinite(angleMax, "angleMax");
@@ -133,68 +133,75 @@ public abstract class AbstractCoordinate implements Coordinate {
 
     /**
      * Checks for illegal double values which were given as parameters.
-     * @param v value to check
-     * @throws IllegalArgumentException if v is NaN or (pos./neg.) infinity
+     * @param arg value to check
+     * @param argName name of that parameter (used in error message of exception)
+     * @throws CoordinateUseException if arg is NaN or (pos./neg.) infinity
      * @MethodType assertion
      */
-    static void assertArgIsFinite(double v, String argName) throws CoordinateUseException {
-        if(! Double.isFinite(v)) {
-            throw new CoordinateUseException(
-                    argName + " must have a finite double value",
-                    new IllegalArgumentException()
-            );
+    static void assertArgIsFinite(double arg, String argName) throws CoordinateUseException {
+        if(! Double.isFinite(arg)) {
+            throw new CoordinateUseException(argName + " must have a finite double value");
         }
     }
 
+    /**
+     * Checks for illegal double values which were given as parameters.
+     * @param arg value to check
+     * @param argName name of that parameter (used in error message of exception)
+     * @param limit
+     * @throws CoordinateUseException if abs(arg) > abs(limit)
+     * @MethodType assertion
+     */
     static void assertArgMaxMagnitude(double arg, String argName, double limit) throws CoordinateUseException {
         if(Math.abs(arg) > Math.abs(limit)) {
-            throw new CoordinateUseException(
-                    String.format(
-                            "%s must have an absolute value that is less than or equal to the" +
-                                    "allowable maximum value %g (input: %g)",
-                            argName, limit, arg
-                    ),
-                    new IllegalArgumentException()
-            );
+            throw new CoordinateUseException(String.format(
+                    "%s must have an absolute value that is less than or equal to the" +
+                            "allowable maximum value %g (input: %g)",
+                    argName, limit, arg
+            ));
         }
     }
 
+    /**
+     * Checks for illegal values which were given as parameters.
+     * @param arg value to check
+     * @param argName name of that parameter (used in error message of exception)
+     * @throws CoordinateUseException if arg is null
+     * @MethodType assertion
+     */
     static void assertArgNotNull(Object arg, String argName) throws CoordinateUseException {
         if(arg == null) {
             throw new CoordinateUseException(
-                    argName + " must not be null",
-                    new NullPointerException()
+                    argName + " must not be null"
             );
         }
     }
 
-    static void assertArg(boolean expression, String reason) throws CoordinateUseException {
+    /**
+     * Checks if a given boolean expression evaluates to true.
+     * Should be used only for checks of preconditions.
+     * @param expression the boolean expression to check
+     * @param reason an error message for the exception
+     * @throws CoordinateUseException if expression is false
+     * @MethodType assertion
+     */
+    static void assertPrecondition(boolean expression, String reason) throws CoordinateUseException {
         if(! expression) {
-            throw new CoordinateUseException(
-                    reason,
-                    new IllegalArgumentException()
-            );
+            throw new CoordinateUseException(reason);
         }
     }
 
-    static void assertState(boolean expression, String reason) throws CoordinateUseException {
-        if(! expression) {
-            throw new CoordinateUseException(
-                    reason,
-                    new IllegalStateException()
-            );
-        }
-    }
-
+    /**
+     * Checks if a given boolean expression evaluates to true.
+     * Should be used only for checks of postconditions or class invariants.
+     * @param expression the boolean expression to check
+     * @param reason an error message for the exception
+     * @throws CoordinateError if expression is false
+     * @MethodType assertion
+     */
     static void assertInternalCondition(boolean expression, String reason) throws CoordinateError {
         if(! expression) {
             throw new CoordinateError(reason);
         }
     }
-
-    /*
-    static CoordinateException takeBlame(CoordinateException cause) {
-        return new CoordinateException(cause).blameCallee();
-    }
-    */
 }

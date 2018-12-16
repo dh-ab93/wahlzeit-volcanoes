@@ -1,16 +1,11 @@
 package org.wahlzeit.model;
 
 import org.junit.Test;
-import org.junit.Before;
 import org.junit.BeforeClass;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.GregorianCalendar;
-import java.util.logging.Logger;
 
 public class VolcanoPhotoTest {
 	
@@ -39,7 +34,7 @@ public class VolcanoPhotoTest {
 	public void testVolcanoPhoto() {
 		Coordinate c1;
 		try {
-			c1 = new CartesianCoordinate(0.0, 0.0, 0.0);
+			c1 = CartesianCoordinate.create(0.0, 0.0, 0.0);
 		} catch (AbstractCoordinateException e) {
 			// fail test
 			throw new AssertionError(e);
