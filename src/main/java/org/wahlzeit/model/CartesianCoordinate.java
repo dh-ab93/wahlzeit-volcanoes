@@ -48,6 +48,9 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	
 	/**
 	 * right-handed coordinate system where y points right, z points up
+	 * All values have a guaranteed precision of 10 decimal digits in scientific notation.
+	 * Instances are cached and shared - repeated calls with arguments which are numerically equal or below
+	 * the precision threshold will return cached instances equal to the arguments within that precision.
 	 * @throws CoordinateUseException if any argument is not a finite double value or has magnitude > MAX_VALUE
 	 * @throws CoordinateError for contract violation in callee (bug in code)
 	 * @MethodType factory

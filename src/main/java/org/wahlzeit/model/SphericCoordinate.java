@@ -51,6 +51,11 @@ public class SphericCoordinate extends AbstractCoordinate {
      * theta as polar angle [0,PI),
 	 * phi as azimuthal angle [0, 2PI).
 	 * Theta and phi will be normalized to be inside that range.
+	 * Radius is normalized to a positive value.
+	 * All values have a guaranteed precision of 10 decimal digits in scientific notation.
+	 * Instances are cached and shared - repeated calls with arguments which are numerically equal or below
+	 * the precision threshold will return cached instances equal to the arguments within that precision.
+	 * The arguments are normalized before determining similarity to cached instances.
 	 * @throws CoordinateUseException if any argument is not a finite double value or if radius has magnitude > MAX_VALUE
 	 * @throws CoordinateError for contract violation in callee (bug in code)
 	 * @MethodType factory
