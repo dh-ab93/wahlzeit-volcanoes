@@ -2,6 +2,7 @@ package org.wahlzeit.model;
 
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Work;
+import org.wahlzeit.PatternInstance;
 import org.wahlzeit.services.ObjectManager;
 import org.wahlzeit.servlets.AbstractServlet;
 
@@ -17,6 +18,12 @@ import static org.wahlzeit.services.OfyService.ofy;
  * 
  * @review
  */
+@PatternInstance(
+		patternName = "Singleton",
+		participants = {
+				"GlobalsManager"
+		}
+)
 public class GlobalsManager extends ObjectManager {
 
 	private static final Logger log = Logger.getLogger(GlobalsManager.class.getName());
