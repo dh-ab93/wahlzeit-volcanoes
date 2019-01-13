@@ -21,7 +21,7 @@ import java.io.StringWriter;
 @PatternInstance(
 		patternName = "Builder pattern",
 		participants = {
-				"LogBuilder", "String"
+				"Builder", "Concrete Builder"
 		}
 )
 public class LogBuilder {

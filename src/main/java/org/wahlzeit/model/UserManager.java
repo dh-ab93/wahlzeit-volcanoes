@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 @PatternInstance(
 		patternName = "Singleton",
 		participants = {
-				"UserManager"
+				"Singleton"
 		}
 )
 public class UserManager extends ClientManager {

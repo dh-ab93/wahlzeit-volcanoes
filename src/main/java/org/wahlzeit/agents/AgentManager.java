@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 @PatternInstance(
 		patternName = "Singleton",
 		participants = {
-				"AgentManager"
+				"Singleton"
 		}
 )
 public class AgentManager {

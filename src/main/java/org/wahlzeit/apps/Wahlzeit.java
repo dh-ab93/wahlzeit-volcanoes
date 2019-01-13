@@ -36,10 +36,7 @@ import java.util.logging.Logger;
 @PatternInstance(
 		patternName = "Observer",
 		participants = {
-				"Wahlzeit",
-				"ServletContextListener",
-				"ServletContextEvent",
-				"servlet container (calls contextInitialized() and contextDestroyed())"
+				"ConcreteObserver"
 		}
 )
 public class Wahlzeit implements ServletContextListener {
