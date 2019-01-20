@@ -7,59 +7,55 @@ import com.googlecode.objectify.annotation.Entity;
 @Entity
 public class Volcano extends DataObject {
 
-	protected String name;
-	protected Location location;
-	protected int elevationMeters;
+	protected final String name;
+	protected Location location = null;
+	protected int elevationMeters = 0;
+	protected final VolcanoType type;
 	
-	/*
-	 * public constructor needed for deserialization
-	 */
-	/**
-	 * @methodtype constructor
-	 */
-	public Volcano() {
+	Volcano(String name, VolcanoType type) {
+		this.name = name;
+		this.type = type;
 	}
 	
 	/**
-	 * @methodtype getter
+	 * @methodtype get
 	 */
 	public String getName() {
 		return name;
 	}
 	
 	/**
-	 * @methodtype setter
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	/**
-	 * @methodtype getter
+	 * @methodtype get
 	 */
 	public Location getLocation() {
 		return location;
 	}
 
 	/**
-	 * @methodtype setter
+	 * @methodtype set
 	 */
 	public void setLocation(Location location) {
 		this.location = location;
 	}
 	
 	/**
-	 * @methodtype getter
+	 * @methodtype get
 	 */
 	public int getElevationMeters() {
 		return elevationMeters;
 	}
 
 	/**
-	 * @methodtype setter
+	 * @methodtype set
 	 */
 	public void setElevationMeters(int elevationMeters) {
 		this.elevationMeters = elevationMeters;
 	}
-	
+
+	/**
+	 * @methodtype get
+	 */
+	public VolcanoType getType() {
+		return type;
+	}
 }

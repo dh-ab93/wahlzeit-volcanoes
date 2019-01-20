@@ -22,15 +22,7 @@ package org.wahlzeit.main;
 
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesServiceFactory;
-import org.wahlzeit.model.GlobalsManager;
-import org.wahlzeit.model.Photo;
-import org.wahlzeit.model.PhotoCaseManager;
-import org.wahlzeit.model.PhotoFactory;
-import org.wahlzeit.model.PhotoManager;
-import org.wahlzeit.model.User;
-import org.wahlzeit.model.UserManager;
-import org.wahlzeit.model.VolcanoPhotoFactory;
-import org.wahlzeit.model.VolcanoPhotoManager;
+import org.wahlzeit.model.*;
 import org.wahlzeit.model.persistence.DatastoreAdapter;
 import org.wahlzeit.model.persistence.ImageStorage;
 import org.wahlzeit.services.LogBuilder;
@@ -66,6 +58,9 @@ public abstract class ModelMain extends AbstractMain {
 		log.config(LogBuilder.createSystemMessage().addAction("load user").toString());
 		UserManager.getInstance().init();
 
+		log.config(LogBuilder.createSystemMessage().addAction("load VolcanoTypes and Volcanoes").toString());
+		VolcanoManager.getInstance().init();
+
 		log.config(LogBuilder.createSystemMessage().addAction("init PhotoFactory").toString());
 		VolcanoPhotoFactory.initialize();
 
@@ -89,6 +84,8 @@ public abstract class ModelMain extends AbstractMain {
 	public void saveAll() throws IOException{
 		PhotoCaseManager.getInstance().savePhotoCases();
 		PhotoManager.getInstance().savePhotos();
+		VolcanoManager.getInstance().saveVolcanoes();
+		VolcanoManager.getInstance().saveVolcanoTypes();
 		UserManager.getInstance().saveClients();
 		GlobalsManager.getInstance().saveGlobals();
 	}

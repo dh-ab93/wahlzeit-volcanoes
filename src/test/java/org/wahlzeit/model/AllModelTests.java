@@ -18,6 +18,7 @@ import org.junit.runner.*;
 	org.wahlzeit.model.TagsTest.class,
 	org.wahlzeit.model.UserStatusTest.class,
 	org.wahlzeit.model.ValueTest.class,
+	org.wahlzeit.model.VolcanoManagerTest.class,
 	org.wahlzeit.model.VolcanoPhotoTest.class,
 	org.wahlzeit.model.persistence.AllModelPersistenceTests.class
 })

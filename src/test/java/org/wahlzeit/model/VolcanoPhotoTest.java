@@ -41,11 +41,10 @@ public class VolcanoPhotoTest {
 		}
 		Location l1 = new Location(c1);
 		
-		Volcano v1 = new Volcano();
+		Volcano v1 = VolcanoManager.getInstance().getVolcano("Fuji", "stratovolcano");
 		v1.setElevationMeters(3776);
 		v1.setLocation(l1);
-		v1.setName("Fuji");
-		
+
 		VolcanoPhoto p1 = VolcanoPhotoFactory.getInstance().createPhoto();
 		p1.setAuthorName("Midori");
 		p1.setDateTaken(new GregorianCalendar(2007, 07, 31));
