@@ -5,6 +5,19 @@ import java.util.Date;
 
 import com.googlecode.objectify.annotation.Subclass;
 
+/*
+instantiation documentation for VolcanoPhoto class:
+
+intended use: direct use of public constructor (use of PhotoFactory has no benefits)
+	delegation: this-object
+	selection: on-the-spot
+	configuration: N/A
+	instantiation: in-code
+	initialization: default
+	building: default
+
+ */
+
 @Subclass
 public class VolcanoPhoto extends Photo {
 	
