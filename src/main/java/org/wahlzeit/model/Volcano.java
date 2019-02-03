@@ -21,6 +21,99 @@ the Volcano(name, type) constructor is accessible as well
 (e.g. for test suites, or if object sharing and persistence is not wanted)
  */
 
+/*
+-------------------------------------------------------------------------------
+collaboration between Volcano and VolcanoType:
+
+public collaboration Classification {
+	public role Classifier {
+		public String getName();
+	}
+
+	public role Subject {
+		public Classifier getClassifier();
+	}
+}
+
+public class Volcano binds Classification.Subject {
+	...
+	public VolcanoType getType();
+	...
+}
+
+public class VolcanoType binds Classification.Classifier, Classification.Subject {
+	...
+	public String getName();
+	public boolean isSubtypeOf(VolcanoType vt);
+	public void setSupertype(VolcanoType vt);
+	...
+}
+
+VolcanoType can be a subtype of another VolcanoType -> a type can be a subject of a classification as well.
+(The method names in VolcanoType don't match exactly, but the concept still applies.)
+ */
+
+/*
+-------------------------------------------------------------------------------
+collaboration between Volcano and VolcanoPhoto:
+
+public collaboration PartOf {
+	public role Part {}
+
+	public role Whole {
+		public Part getPart();
+		public void setPart(Part part);
+	}
+}
+
+public class Volcano binds PartOf.Part { ... }
+public class VolcanoPhoto binds PartOf.Whole {
+	...
+	public Volcano getVolcano();
+	public void setVolcano(...);
+	...
+}
+ */
+
+/*
+-------------------------------------------------------------------------------
+collaboration between Volcano and VolcanoManager:
+
+public collaboration PersistenceManagement {
+	public role DataObject {}
+
+	public role Manager {
+		// needs to keep track of all DataObject instances from create() or loadDataObjects()
+		public DataObject create(); // factory method
+		public void loadDataObjects(); // from PersistenceLayer
+		public void saveDataObjects(); // to PersistenceLayer
+	}
+
+	public role Client {
+		// should only use Manager to create new instances of DataObject
+	}
+
+	public role PersistenceLayer {
+		// calls Manager.load/saveDataObjects() at startup/shutdown
+		// during startup: recreates persisted DataObjects and transfers them to Manager
+		// during shutdown: persists the DataObjects given by Manager
+	}
+}
+
+public class Volcano extends DataObject binds PersistenceManagement.DataObject { ... }
+public class VolcanoManager extends ObjectManager binds PersistenceManagement.Manager {
+	...
+	protected HashMap<String, Volcano> existingVolcanoes;
+
+	// factory method
+	public Volcano getVolcano(String volcanoName, String volcanoTypeName) { ... }
+
+	protected void loadVolcanoes() { ... }
+	protected void saveVolcanoes() { ... }
+	...
+}
+*/
+
 @Entity
 public class Volcano extends DataObject {
 
